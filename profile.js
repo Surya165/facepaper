@@ -18,7 +18,7 @@ function getHint(string)
 function sendFriendRequest(friend,username)
 {
 	var btn = document.getElementById(friend);
-	//window.alert(btn.value);
+	window.alert(btn.value);
 	btn.innerHTML = "Friend Request Sent";
 	btn.onclick = "";
 	//indow.alert(friend);
@@ -71,7 +71,3 @@ function unfriend(friend)
 	xmlhttp.send();
 }
 
-function validate(0)
-{
-	
-}
