@@ -14,8 +14,6 @@ session_start();
 <button name="login" type="submit" value="login">Login</button>
 </form>
 
-<button onclick="window.alert('Peekinavthee')">Click this</button>
-
 
 <?php
 if(isset($_POST['login']))
@@ -43,7 +41,7 @@ if(isset($_POST['login']))
 			$password = $_SESSION['password'];
 //			echo "Database connection succesful\n";
 			$sql = "select * from profile where username = '".$_SESSION['username']."'";
-			echo $sql;
+			//echo $sql;
 			$row = mysql_query($sql);
 			$retVal = mysql_fetch_assoc($row);
 			if($retVal['password'] == $password && isset($_SESSION['username']) )

@@ -20,27 +20,60 @@
 	<script src="profile.js">
 	</script>
 	<script type="text/javascript">
-	function friends(friend,username)
+	function friend(friend)
 	{
+		window.alert(friend);
 		var btn = document.getElementById(friend);
+		//window.alert(btn.value);
 		var i = btn.value;
-		switch(i)
+		window.alert(i);
+		/*switch(i)
 		{
+
 			case 0:
+				window.alert("case 0");
 				btn.value = 3;
-				sendFriendRequest(friend,username);
+				sendFriendRequest(friend);
 				break;
-			case 1:
+
+			case 1
 				btn.value = 0;
 				unfriend(friend);
 				break;
+
 			case 2:
 				btn.value = 1;
 				acceptFriendRequest(friend);
 				break;
+
 			case 3:
 				btn.value = 0;
 				unfriend(friend);
+				break;
+
+			default:
+				window.alert("No cases selected " + i);
+
+		}*/
+		if( i == 0)
+		{
+			btn.value = 3;
+			sendFriendRequest(friend);
+		}
+		else if(i == 1)
+		{
+			btn.value = 0;
+			unfriend(friend);
+		}
+		else if( i == 2)
+		{
+			btn.value = 1;
+			acceptFriendRequest(friend);
+		}
+		else if( i == 3)
+		{
+			btn.value = 0;
+			unfriend("friend");
 		}
 	}
 
@@ -93,7 +126,7 @@
 		var btn = document.getElementById(friend);
 		//window.alert(btn.value);
 		btn.innerHTML = "Friend Request Sent";
-		
+		btn.onclick = "";
 	//indow.alert(friend);
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function(){
@@ -142,24 +175,147 @@
 	function deletePost(id)
 	{
 		var xmlhttp = new XMLHttpRequest();
+		window.alert("Button pressed and id is "+ id);
 		var btn = document.getElementById(id);
 		xmlhttp.onreadystatechange = function()
 		{
 			if(this.readyState == 4 && this.status == 200)
 			{
-				btn.style.display = "none";
-				var post = document.getElementById()
+				//btn.style.display = "none";
+				var k = "div"+id;
+				var post = document.getElementById(k);
+				post.style.display = none;
+				window.alert(this.responseText);
+
 			}
 		}
+		xmlhttp.open("GET","deletePost.php?id="+id,true);
+		xmlhttp.send();
+	}
+
+
+
+	function openChatBox(friend)
+	{
+		var chatBox = document.getElementById("chatBox");
+		chatBox.style.display = "block";
+	}
+
+
+
+
+	function onloadFunction()
+	{
+		var images = document.getElementsByClassName('postImages');
+		var numberOfImages = images.length;
+		var i;
+		var height;
+		var width;
+		var ratio;
+		for ( i = 0; i < numberOfImages; i ++)
+		{
+			height = images[i].clientHeight;
+			width = images[i].clientWidth;
+			if ( height > width)
+			{
+			}
+			else
+			{
+				ratio = 500 /width;
+			}
+			height *= ratio;
+			width *= ratio;
+			images[i].style.height = height;
+			images[i].style.width = width;
+				
+		}
+	}	
+
+
+
+
+	function addComment(id,username)
+	{
+		var xmlhttp = new XMLHttpRequest();
+		var btn = document.getElementById("comment"+id);
+		var post = document.getElementById("commentsDiv" + id);
+		var par = document.createElement("p");
+
+		
+		var strong = document.createElement("strong");
+		var user = document.createTextNode(username);
+		strong.appendChild(user);
+		post.appendChild(strong);
+
+
+
+		var text = document.forms["commentForm"+id]['comment'].value;
+		//window.alert("comment.php?postId="+id+"&text="+text);
+		var comment = document.createTextNode(text);
+		par.appendChild(comment);
+		
+		post.appendChild(par);
+		xmlhttp.onreadystatechange = function ()
+		{
+			if(this.readyState == 4 &&  this.Status == 200 )
+			{
+				//window.alert("comment.php?postId="+id+"&text="+text);
+			}
+		}
+		xmlhttp.open("GET","comment.php?postId="+id+"&text="+text,true);
+		xmlhttp.send();
+		var input = document.getElementById("input"+id);
+		input.innerHTML = '';
 	}
 	</script>
 </head>
-<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body onload="onloadFunction()">
 <form action="logout.php">
 	<button>LOG OUT</button>
 </form>
 <button onclick="toggle()" value="0" id="btn">Click This</button>
 <div id="test" style="width:100px;height: 100px;"></div> 
+
+
+
+
+<a href="chat.php">Chat</a>
+
+<?php
+
+	//shows details	
+	$sql = "select * from profile where username='".$username."'";
+	//echo $sql;
+	$row = mysql_query($sql);
+	$retVal = mysql_fetch_array($row);
+	$numberOfFields = mysql_num_fields($row);
+	for ( $i = 0; $i < $numberOfFields ; $i ++){
+		if($i != 1)
+			echo $retVal[$i]."<br/>";
+	}
+
+
+?>
 
 
 
@@ -247,27 +403,55 @@ if(isset($_POST['post']))
 
 
 
-<div class="container" style="margin-left: 10%;margin-right: 10%;border-radius: 2px;border:1px solid black">
+<div class="container" style="float:none;border-radius: 2px;border:1px solid black;width: 40%;float: left;">
 <!--This part of the code prints all the posts-->
 <?php
  
  $sql = "select id,text,image,user from  posts where user='".$username."' or user in (";
  $sql .= "select user1 from friends where user2='".$username."' and areFriends = 1)";
  $sql .= "or user in (";
- $sql .= "select user2 from friends where user1='".$username."' and areFriends = 1)";
+ $sql .= "select user2 from friends where user1='".$username."' and areFriends = 1) order by id desc";
  //echo $sql;
  $row = mysql_query($sql);
  $numberOfRows = mysql_num_rows($row);
  for($i = 0;$i < $numberOfRows; $i++)
  {
- 	$ide = $retVal['id'];
- 	echo "<div class='posts' style='border:1px solid red;' id ='div".$ide."'>";
-
  	$retVal =mysql_fetch_assoc($row);
+ 	$ide = $retVal['id'];
+ 	
+ 	echo "<div class='posts' style='border:1px solid red;' id ='div".$retVal['id']."'>";
+
+ 	
  	echo "<h1>".$retVal['user']."posted this</h1>";
  	echo "<p>".$retVal['text']."</p>";
- 	echo "<img src='".$retVal['image']."' style='width:500px;height:500px;'/><button onclick='deletePost(".$retVal['id'].")'>Delete Post</button>";
+ 	echo "<img class='postImages' src='".$retVal['image']."' style='width:500px;height:500px;'/>";
+
+ 	//<button onclick='deletePost(".$retVal['id'].")' id='".$retVal['id']."'>Delete Post</button>";
+
+
+ 	
+ 	//Print Comments
+ 	$sql = "select * from comments where postId=".$ide;
+ 	$row = mysql_query($sql);
+ 	$numberOfRows = mysql_num_rows($row);
+
+	echo  	"<div id='commentsDiv".$ide."'>";
+ 	for ( $j = 0;$j < $numberOfRows; $j++)
+ 	{
+ 		$retVal = mysql_fetch_assoc($row);
+
+ 		echo "<strong>".$retVal['username']."</strong>";
+ 		echo "<p>".$retVal['comment']."</p>";
+ 	}
  	echo "</div>";
+ 	echo "<form name='commentForm".$ide."''><label for='comment'>".$username."</label><input type='text' id='input".$ide."' name='comment' placeholder='Enter your comment here'/></form><button id='comment".$ide."' onclick='addComment(".$ide.",\"".$username."\")'>Comment</button>";
+ 	
+
+
+ 	//adds comment
+
+ 	echo "</div>";
+ 	
  }
  
 ?>
@@ -315,16 +499,6 @@ if($con)
 
 
 
-	//shows details	
-	$sql = "select * from profile where username='".$username."'";
-	//echo $sql;
-	$row = mysql_query($sql);
-	$retVal = mysql_fetch_array($row);
-	$numberOfFields = mysql_num_fields($row);
-	for ( $i = 0; $i < $numberOfFields ; $i ++){
-		if($i != 1)
-			echo $retVal[$i]."<br/>";
-	}
 
 
 
@@ -332,7 +506,10 @@ if($con)
 
 
 
+?>
 
+<div id="friendList" style="display:block;width:50%;float: right;">
+<?php
 
 
 	echo "<br><br><br><br><br><h1>People who sent you friend requests</h1>";
@@ -365,5 +542,19 @@ if($con)
 	printRecommendedFriends($username);
 }
 ?>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>

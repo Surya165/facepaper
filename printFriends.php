@@ -86,6 +86,7 @@ function printFriendList($username)
 		$friend = $retVal[0];
 		echo $friend." ";
 		echo "<button id=\"".$friend."\" onclick=\"unfriend('".$friend."')\">unfriend</button>\n";
+		echo "<button id='chat".$friend."' value='".$friend."' onclick='sendMessage(\"".$friend."\")'>Chat</button>";
 	}
 }
 
