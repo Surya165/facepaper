@@ -236,7 +236,10 @@
 
 	function addComment(id,username)
 	{
-		var xmlhttp = new XMLHttpRequest();
+		
+
+				var xmlhttp = new XMLHttpRequest();
+		
 		var btn = document.getElementById("comment"+id);
 		var post = document.getElementById("commentsDiv" + id);
 		var par = document.createElement("p");
@@ -246,9 +249,6 @@
 		var user = document.createTextNode(username);
 		strong.appendChild(user);
 		post.appendChild(strong);
-
-
-
 		var text = document.forms["commentForm"+id]['comment'].value;
 		//window.alert("comment.php?postId="+id+"&text="+text);
 		var comment = document.createTextNode(text);
@@ -265,7 +265,12 @@
 		xmlhttp.open("GET","comment.php?postId="+id+"&text="+text,true);
 		xmlhttp.send();
 		var input = document.getElementById("input"+id);
+		input.value = '';
 		input.innerHTML = '';
+	}
+	function addCommentToTheClientSide(id,username)
+	{
+
 	}
 	</script>
 </head>
@@ -402,8 +407,33 @@ if(isset($_POST['post']))
 
 
 
+<div class="container" id="groupsDivision">
+<a href="createGroup.php">Create Group</a>
+<?php
+echo "<strong>your groups</strong>";
+$sql = "select * from groupsAndUsers where username = '".$username."'";
+$row = mysql_query($sql);
+$numberOfGroups = mysql_num_rows($row);
+for ( $i = 0; $i < $numberOfGroups; $i++){
+	$retVal = mysql_fetch_assoc($row);
 
-<div class="container" style="float:none;border-radius: 2px;border:1px solid black;width: 40%;float: left;">
+	$sql2 = "select groupName from groups where groupId='".$retVal['groupId']."'";
+	$row2 = mysql_query($sql2);
+	$retVal2 = msql_fetch_array($row2);
+	echo $retVal2['0']."<br>";
+}
+echo "<br><strong>Groups</strong><br>";
+$sql = "select * from groups";
+$row = mysql_query($sql);
+$numberOfRows = mysql_num_rows($row);
+for ( $i = 0; $i < $numberOfRows; $i ++){
+	$retVal = mysql_fetch_assoc($row);
+	echo $retVal['groupName'];
+}
+?>
+
+</div>
+<div class="container" style="border-radius: 2px;border:1px solid black;float:left;padding: 10px 10px 10px 10px ">
 <!--This part of the code prints all the posts-->
 <?php
  
@@ -413,11 +443,14 @@ if(isset($_POST['post']))
  $sql .= "select user2 from friends where user1='".$username."' and areFriends = 1) order by id desc";
  //echo $sql;
  $row = mysql_query($sql);
+
  $numberOfRows = mysql_num_rows($row);
+ echo "The numberOfRows is ".$numberOfRows;
  for($i = 0;$i < $numberOfRows; $i++)
  {
  	$retVal =mysql_fetch_assoc($row);
  	$ide = $retVal['id'];
+ 	echo $ide;
  	
  	echo "<div class='posts' style='border:1px solid red;' id ='div".$retVal['id']."'>";
 
@@ -432,19 +465,20 @@ if(isset($_POST['post']))
  	
  	//Print Comments
  	$sql = "select * from comments where postId=".$ide;
- 	$row = mysql_query($sql);
- 	$numberOfRows = mysql_num_rows($row);
+ 	$row2 = mysql_query($sql);
+ 	$numberOfRows2= mysql_num_rows($row2);
 
 	echo  	"<div id='commentsDiv".$ide."'>";
- 	for ( $j = 0;$j < $numberOfRows; $j++)
+ 	for ( $j = 0;$j < $numberOfRows2; $j++)
  	{
- 		$retVal = mysql_fetch_assoc($row);
+ 		$retVal2 = mysql_fetch_assoc($row2);
 
- 		echo "<strong>".$retVal['username']."</strong>";
- 		echo "<p>".$retVal['comment']."</p>";
+ 		echo "<strong>".$retVal2['username']."</strong>";
+ 		echo "<p>".$retVal2['comment']."</p>";
  	}
  	echo "</div>";
- 	echo "<form name='commentForm".$ide."''><label for='comment'>".$username."</label><input type='text' id='input".$ide."' name='comment' placeholder='Enter your comment here'/></form><button id='comment".$ide."' onclick='addComment(".$ide.",\"".$username."\")'>Comment</button>";
+ 	echo "<form name='commentForm".$ide."'><label for='comment'>".$username."</label><input type='text' id='input".$ide."' name='comment' placeholder='Enter your comment here'/></form><button id='comment".$ide."' onclick='addComment(".$ide.",\"".$username."\")'>Comment</button>";
+ 	
  	
 
 
@@ -481,19 +515,6 @@ if(isset($_POST['post']))
 <?php
 include "printFriends.php";
 $username = $_SESSION['username'];
-if($con)
-{
-
-
-
-
-
-
-	$db = mysql_select_db("eyebook");
-	if ( $db )
-	{
-	//	echo "Database connection Succesful<br>";
-	}
 
 
 
@@ -508,11 +529,11 @@ if($con)
 
 ?>
 
-<div id="friendList" style="display:block;width:50%;float: right;">
+<div id="friendList" style="display:block;float: right;border:1px solid blue;padding: 10px 10px 10px 10px;">
 <?php
 
 
-	echo "<br><br><br><br><br><h1>People who sent you friend requests</h1>";
+	echo "<br><br><br><strong>Friend Requests</strong><br>";
 	/**shows friend requests that are to be accepted;
 	*/
 	printRecievedFriendRequests($username);
@@ -521,13 +542,13 @@ if($con)
 
 	/**shows sent friend requests
 	**/
-	echo "<br><br><br><h1>Friend requests sent by you</h1><br>";
+	echo "<br><br><br><strong>Sent Requests</strong><br>";
 	printSentFriendRequests($username);
 	
 
 
 
-	echo "<br><br><br><br><br><h1>People you are friends with</h1>";
+	echo "<br><br><br><strong>Friends</strong><br>";
 	//shows friends
 	printFriendList($username);
 
@@ -538,9 +559,9 @@ if($con)
 
 
 	//shows recomended friends
-	echo "<h1>People you may know</h1>";
+	echo "<br><br><br><strong>People you may know</strong><br>";
 	printRecommendedFriends($username);
-}
+
 ?>
 </div>
 

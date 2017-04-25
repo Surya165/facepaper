@@ -1,7 +1,7 @@
 <?php
 session_start();
 $username = $_SESSION['username'];
-include "connection.php";
+include "connect.php";
 
 
 
