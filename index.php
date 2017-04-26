@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'connect.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -19,31 +20,31 @@ session_start();
 if(isset($_POST['login']))
 {
 
-	$con = mysql_connect("localhost","root","1234");
-	$db = mysql_select_db("eyebook");
-	if(!$db)
-	{
-		echo "Connection unsuccesful";
-	}
-	else
-	{
-		echo "Connection Succesful";
-	}
+	//$con = mysql_connect("localhost","root","1234");
+	//$db = mysql_select_db("eyebook");
+	//if(!$db)
+	//{
+	//	echo "Connection unsuccesful";
+	//}
+	//else
+	//{
+	//	echo "Connection Succesful";
+	//}
 
 		$_SESSION['username'] = $_POST['username'];
 		$_SESSION['password'] = $_POST['password'];
 //		echo "Connection succesful";
 		
-		if($db)
-		{
+	//	if($db)
+	//	{
 
 
 			$password = $_SESSION['password'];
 //			echo "Database connection succesful\n";
 			$sql = "select * from profile where username = '".$_SESSION['username']."'";
 			//echo $sql;
-			$row = mysql_query($sql);
-			$retVal = mysql_fetch_assoc($row);
+			$row = mysqli_query($con,$sql);
+			$retVal = mysqli_fetch_assoc($row);
 			if($retVal['password'] == $password && isset($_SESSION['username']) )
 			{
 				
@@ -54,11 +55,11 @@ if(isset($_POST['login']))
 				echo "Enter the correct Password";
 			}
 
-		}
-		else
-		{
-			echo "Database connection aborted"."<br/>";
-		}
+	//	}
+	//	else
+	//	{
+	//		echo "Database connection aborted"."<br/>";
+	//	}
 }	
 ?>
 
@@ -90,7 +91,7 @@ if(isset($_POST['login']))
 
 
 <?php
-include "connect.php";
+//include "connect.php";
 
 if(isset($_POST['signup']))
 {
@@ -105,7 +106,7 @@ if(isset($_POST['signup']))
 		$sql .= $username."','".$password."',".$age.",'".$sex."','".$status."')";
 	//	echo $sql;
 	//	echo $username." ".$password." ".$sex." ".$status." ".$age;
-		$row = mysql_query($sql);
+		$row = mysqli_query($con,$sql);
 		if(!$row)
 		{
 		//	echo "Query Unsuccesful";

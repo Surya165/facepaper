@@ -7,4 +7,4 @@ $text = $_REQUEST['text'];
 //echo $text;
 $sql = "insert into comments ( username, postId, comment ) value ('".$username."',".$postId.",'".$text."')";
 echo $sql;
-$row = mysql_query($sql);
+$row = mysqli_query($con,$sql);

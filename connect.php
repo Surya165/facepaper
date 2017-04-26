@@ -1,3 +1,4 @@
 <?php
-$con = mysql_connect("localhost","root","1234");
-$db = mysql_select_db("eyebook");
+$con = mysqli_connect("localhost","root","nopassword","eyebook");
+//$db = mysql_select_db("eyebook");
+$transferVariable = 1;

@@ -2,7 +2,7 @@
 session_start();
 $username = $_SESSION['username'];
 include "connect.php";
-
+//$con = mysqli_connect("localhost","root","nopassword","eyebook");
 
 
 
@@ -10,19 +10,25 @@ include "connect.php";
 function printSentFriendRequests($username)
 {
 	///echo "Yess";
+	include "connect.php";
 	$sql = "select user2 from friends where user1='".$username."' and areFriends = 0";
 	//echo $sql;
-	$row = mysql_query($sql);
+	if(!$con)
+	{
+		echo "Connection variable not working";
+		echo $transferVariable;
+	}
+	$row = mysqli_query($con,$sql);
 	if($row)
 	{
 		//echo "<br>Keeeka<br>";
 	}
-	$numberOfRows = mysql_num_rows($row);
+	$numberOfRows = mysqli_num_rows($row);
 	echo "<table>";
 	for ($i = 0 ;$i < $numberOfRows; $i++)
 	{
 		echo "<tr>";
-		$retVal = mysql_fetch_assoc($row);
+		$retVal = mysqli_fetch_assoc($row);
 		$friend = $retVal['user2'];	
 
 
@@ -43,10 +49,11 @@ function printSentFriendRequests($username)
 
 function printRecievedFriendRequests($username)
 {
+	include "connect.php";
 	$sql = "select user1 from friends where user2='".$username."' and areFriends = 0";
 
-	$row = mysql_query($sql);
-	$numberOfRows = mysql_num_rows($row);
+	$row = mysqli_query($con,$sql);
+	$numberOfRows = mysqli_num_rows($row);
 	if(!$numberOfRows)
 	{
 		echo "<br>No one<br>";
@@ -54,7 +61,7 @@ function printRecievedFriendRequests($username)
 	echo "<table>";
 	for ($i = 0; $i < $numberOfRows; $i++){
 		echo "<tr>";
-		$retVal = mysql_fetch_array($row);
+		$retVal = mysqli_fetch_array($row);
 		$friend = $retVal[0];
 		echo "<td>".$friend."</td>";
 		echo "<td><button id=\"".$friend."\" onclick=\"acceptFriendRequest('".$friend."')\">
@@ -71,10 +78,11 @@ function printRecievedFriendRequests($username)
 
 function printFriendList($username)
 {
+	include "connect.php";
 	$sql = "select username from profile where username in (select user1 from friends where user2='".$username."' and areFriends = 1) or username in (select user2 from friends where user1='".$username."' and areFriends=1)";
 	
-	$row = mysql_query($sql);
-	$numberOfRows = mysql_num_rows($row);
+	$row = mysqli_query($con,$sql);
+	$numberOfRows = mysqli_num_rows($row);
 	if(!$numberOfRows)
 	{
 		echo "Hello ".$username." it looks like you don't have any friends. Send friend requests to people.";
@@ -82,7 +90,7 @@ function printFriendList($username)
 	for ( $i = 0; $i < $numberOfRows; $i ++)
 	{
 
-		$retVal = mysql_fetch_array($row);
+		$retVal = mysqli_fetch_array($row);
 		$friend = $retVal[0];
 		echo $friend." ";
 		echo "<button id=\"".$friend."\" onclick=\"unfriend('".$friend."')\">unfriend</button>\n";
@@ -96,6 +104,7 @@ function printFriendList($username)
 
 function printRecommendedFriends($username)
 {
+	include "connect.php";
 	$sql = "select username from profile where username not in";
 	$sql .= "(select user1 from friends where user2='".$username."')";
 	$sql .= " and username not in";
@@ -108,13 +117,13 @@ function printRecommendedFriends($username)
 
 
 	//echo $sql;
-	$row = mysql_query($sql);
-	$numberOfRows = mysql_num_rows($row);
+	$row = mysqli_query($con,$sql);
+	$numberOfRows = mysqli_num_rows($row);
 	//echo "<h1>Other People</h1>";
 	echo "<table>";
 	for ( $j = 0; $j < $numberOfRows; $j++)
 	{
-		$retVal = mysql_fetch_assoc($row);
+		$retVal = mysqli_fetch_assoc($row);
 		$other = $retVal['username'];
 		$stillOther = $other;
 		echo "<tr>";
