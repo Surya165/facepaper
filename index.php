@@ -9,7 +9,8 @@ include 'connect.php';
 	<title>SQL project login page</title>
 </head>
 <body>
-<form action="index.php" method="POST" name="login">
+<form action="index.php" method="POST" name="login"
+style="float:right">
 <input name="username" type="text" placeholder="username" />
 <input name="password" type="password" placeholder="password" />
 <button name="login" type="submit" value="login">Login</button>
@@ -70,10 +71,11 @@ if(isset($_POST['login']))
 
 
 
-
-
-	<h1>Sign Up</h1>
-<form action="index.php" method="POST" name="signup">
+<br><br><br><br>
+<div style="float:right;margin-right:100px">
+	<h1 >Sign Up</h1>
+<form action="index.php" method="POST" name="signup"
+>
 <input name="username1" type="text" placeholder="username"/>
 <!--br><input name="email" type="email" placeholder="email"/-->
 <br><input name="age" type="text" placeholder="age" />
@@ -85,6 +87,7 @@ if(isset($_POST['login']))
 <br><input type="submit" name="signup" value="Sign Up"/>
 <p style="color:red;" id="passwordError"></p>
 </form>
+</div>
 
 
 

@@ -216,7 +216,7 @@ for ( $i = 0; $i < $numberOfRows; $i++)
 </table>
 </div>
 </div>
-<div id="left" style="float:right">
+<div id="left" style="display:inline-block">
 <?php
 //finding if the user is an admin of the page
 
@@ -235,7 +235,14 @@ if($isAdmin)
 	enctype="multipart/form-data" method="POST">
 	
 	<textarea form="text" placeholder="Post your Status" 
-	name="text" style="height:85px;width:250px;"></textarea>
+	name="text" style=" width: 100%;
+    height: 100px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    resize: none;"></textarea>
 	<br><input type="file" name="image" value="image"/>
 	<input type="submit" name="post" value="post" style="float:right"/>
 	</form>
@@ -319,7 +326,7 @@ $_SESSION['recentImage'] = basename($_FILES['image']['name']);
 
 
 <div class="container" style="border-radius: 2px;
-border:1px solid black;float:right; 
+display:inline-block; 
 margin:20px 20px 20px 20px;padding: 10px 10px 10px 10px ">
 <!--This part of the code prints all the posts-->
 <?php
@@ -337,7 +344,9 @@ margin:20px 20px 20px 20px;padding: 10px 10px 10px 10px ">
  	$ide = $retVal['id'];
  	//echo $ide;
  	
- 	echo "<div class='posts' style='border:1px solid red; margin:10px 10px 10px 10px;' 
+ 	echo "<div class='posts' style='border:5px solid #929aa0;border-radius:10px;
+ 	margin: 20px; padding:5px;'
+
  	id ='div".$retVal['id']."'>
  	";
 
